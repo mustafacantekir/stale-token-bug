@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: stale-token-bug
+  jackson.property-naming-strategy: SNAKE_CASE
+  kafka:
+    consumer:
+      group-id: stale-token-bug
+      bootstrap-servers: mockServer1:9093,mockServer2:9093,mockServer3:9093
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        security.protocol: SASL_SSL
+        sasl.mechanism: OAUTHBEARER
+        sasl.login.callback.handler.class: org.apache.kafka.common.security.oauthbearer.secured.OAuthBearerLoginCallbackHandler
+        sasl.oauthbearer.token.endpoint.url: https://mockauthservice/auth/realms/Kafka/protocol/openid-connect/token
+        spring.json.use.type.headers: false
+    jaas:
+      enabled: true
+      login-module: org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule
+      options:
+        clientId: "mockClientId"
+        clientSecret: "mockClientId"
+    listener:
+      ack-mode: record
